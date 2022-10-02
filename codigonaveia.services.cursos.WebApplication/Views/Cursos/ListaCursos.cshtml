@@ -1,0 +1,42 @@
+﻿@model IEnumerable<codigonaveia.services.cursos.WebApplication.Models.CursosViewModel>
+@{
+    ViewData["Title"] = "ListaCursos";
+}
+
+<div class="container">
+    <br />
+
+    <div class="card">
+        <div class="card-header">
+            <label>Lista de Cursos</label>
+        </div>
+
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Data</th>
+                        <th>Titulo</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.DataRegistro</td>
+                             <td>@item.Titulo</td>
+                             <td>@item.Descricao</td>
+                             <td>@item.Valor</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>
