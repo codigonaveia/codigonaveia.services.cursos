@@ -1,0 +1,44 @@
+﻿@model codigonaveia.services.cursos.WebApplication.Models.CursosViewModel
+@{
+    ViewData["Title"] = "Update";
+}
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modal">Alterar cursos</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form asp-action="Update" asp-controller="Cursos" method="post">
+                <input asp-for="Id" type="hidden">
+                <div class="mb-3">
+                    <label for="Data" class="col-form-label">Data:</label>
+                    <input type="date" class="form-control" asp-for="DataRegistro">
+                </div>
+                <div class="mb-3">
+                    <label for="Titulo" class="col-form-label">Titulo:</label>
+                    <input class="form-control" asp-for="Titulo">
+                </div>
+                <div class="mb-3">
+                    <label for="Descricao" class="col-form-label">Descricao:</label>
+                    <textarea class="form-control" asp-for="Descricao"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="valor" class="col-form-label">Valor:</label>
+                    <input class="form-control" asp-for="Valor">
+                </div>
+                <div class="mb-3">
+                    <div class="d-grid gap-2">
+                         <button type="submit" class="btn btn-primary">Alterar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                       
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          
+        </div>
+    </div>
+</div>
+

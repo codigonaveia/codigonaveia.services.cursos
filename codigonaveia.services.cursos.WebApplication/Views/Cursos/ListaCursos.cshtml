@@ -5,7 +5,14 @@
 
 <div class="container">
     <br />
-
+    <div class="mb-3">
+        @Html.ActionLink("Novo Curso","Registrar","Cursos", null, new{@class="btn btn-primary"})
+    
+    @if(TempData["Msg"]!=null){
+        <label class="text text-success">@TempData["Msg"]</label>
+    }
+    
+    </div>
     <div class="card">
         <div class="card-header">
             <label>Lista de Cursos</label>
@@ -20,6 +27,8 @@
                         <th>Titulo</th>
                         <th>Descrição</th>
                         <th>Valor</th>
+                        <th></th>
+                        <td></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,6 +40,18 @@
                              <td>@item.Titulo</td>
                              <td>@item.Descricao</td>
                              <td>@item.Valor</td>
+                             <td>
+                                 <button class="btn btn-danger delete" data-id="@item.Id">Remover</button>
+                               
+                             </td>
+                            <td>
+                              
+                                <button class="btn btn-warning update" data-id="@item.Id">Alterar</button>
+                            </td>
+                            <td>
+
+                                <button class="btn btn-success detalhes" data-id="@item.Id">Detalhes</button>
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -40,3 +61,42 @@
 
 
 </div>
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"></div>
+@section scripts{
+    <script>
+        $('.delete').click(function(){
+            var Id = $(this).attr("data-id")
+            var Url = "/Cursos/Excluir?Id=" + Id;
+            if(confirm("Realmente deseja excluir este curso")){
+                $.ajax({
+                    type:'DELETE',
+                    url: Url,
+                    success: function(result){
+                        alert("Curso excluido com sucesso");
+                    }
+
+
+                });
+               
+
+            }
+         
+        });
+
+        $('.update').click(function(){
+             var Id = $(this).attr("data-id")
+            var Url = "/Cursos/Update?Id=" + Id;
+            $("#modal").load(Url, function(){
+                $("#modal").modal('show');
+            })
+        })
+
+        $('.detalhes').click(function () {
+            var Id = $(this).attr("data-id")
+            var Url = "/Cursos/Detalhes?Id=" + Id;
+            $("#modal").load(Url, function () {
+                $("#modal").modal('show');
+            })
+        })
+    </script>
+}

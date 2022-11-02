@@ -1,0 +1,42 @@
+﻿@model codigonaveia.services.cursos.WebApplication.Models.CursosViewModel
+@{
+    ViewData["Title"] = "Detalhes";
+}
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modal">Detalhes</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          
+                <div class="mb-3">
+                    <label for="Data" class="col-form-label">Data:</label>
+                    <label>@Model.DataRegistro</label>
+                </div>
+                <div class="mb-3">
+                    <label for="Titulo" class="col-form-label">Titulo:</label>
+                    <label>@Model.Titulo</label>
+                </div>
+                <div class="mb-3">
+                    <label for="Descricao" class="col-form-label">Descricao:</label>
+                    <textarea class="form-control" asp-for="Descricao" disabled></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="valor" class="col-form-label">Valor:</label>
+                <label>R$: @Model.Valor</label>
+                </div>
+                <div class="mb-3">
+                    <div class="d-grid gap-2">
+                        
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                    </div>
+                </div>
+          
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</div>

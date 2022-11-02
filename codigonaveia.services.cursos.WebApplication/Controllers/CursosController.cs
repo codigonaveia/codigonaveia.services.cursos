@@ -1,11 +1,6 @@
-﻿using codigonaveia.services.cursos.WebApplication.enumVerbs;
+﻿using codigonaveia.services.cursos.WebApplication.Interfaces;
 using codigonaveia.services.cursos.WebApplication.Models;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using NuGet.Protocol.Core.Types;
-using System.Configuration;
-using System.Net;
-using System.Text;
 
 namespace codigonaveia.services.cursos.WebApplication.Controllers
 {
@@ -13,11 +8,13 @@ namespace codigonaveia.services.cursos.WebApplication.Controllers
     {
         readonly string apiUri;
         private readonly IConfiguration _config;
-      
-        public CursosController(IConfiguration config)
+        private readonly ICursosRepository _cursosRepository;
+
+        public CursosController(IConfiguration config, ICursosRepository cursosRepository)
         {
             _config = config;
-           apiUri = _config.GetValue<string>("Uri");
+            _cursosRepository = cursosRepository;
+            apiUri = _config.GetValue<string>("Uri");
         }
         public IActionResult Index()
         {
@@ -30,52 +27,90 @@ namespace codigonaveia.services.cursos.WebApplication.Controllers
         public async Task<IActionResult> Registrar(CursosViewModel mod)
         {
 
-            using(HttpClient client = new HttpClient())
-            {
+            //using(HttpClient client = new HttpClient())
+            //{
 
-                StringContent content = new StringContent(JsonConvert.SerializeObject(mod), Encoding.UTF8, "application/json");
-                string endpoint = apiUri + enumActions.Register;
-                using(var response = await client.PostAsync(endpoint, content))
-                {
-                    if(response.StatusCode == HttpStatusCode.OK)
-                    {
-                        var result = JsonConvert.SerializeObject(mod);
-                        return RedirectToAction(nameof(ListaCursos), result);
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Erro ao fazer o registro");
-                    }
-                }
-                
-            }
+            //    StringContent content = new StringContent(JsonConvert.SerializeObject(mod), Encoding.UTF8, "application/json");
+            //    string endpoint = apiUri + enumActions.Register;
+            //    using(var response = await client.PostAsync(endpoint, content))
+            //    {
+            //        if(response.StatusCode == HttpStatusCode.OK)
+            //        {
+            //            var result = JsonConvert.SerializeObject(mod);
+            //            return RedirectToAction(nameof(ListaCursos));
+            //        }
+            //        else
+            //        {
+            //            ModelState.AddModelError("", "Erro ao fazer o registro");
+            //        }
+            //    }
 
-            return View();
+            //}
+            await _cursosRepository.Registrar(mod);
+            return RedirectToAction(nameof(ListaCursos));
+
+            //return View();
         }
 
 
         public async Task<IActionResult> ListaCursos()
         {
-            return View(await GetCursos());
+            return View(await _cursosRepository.ObterCursos());
         }
-
-        public async Task<IEnumerable<CursosViewModel>?> GetCursos()
+        public async Task Excluir(int Id)
         {
-            using (HttpClient httpClient = new HttpClient())
-            {
-                var cursos = new CursosViewModel();
-
-                HttpResponseMessage response = await httpClient.GetAsync(apiUri + enumActions.ObterTodosCursos);
-                if (response.IsSuccessStatusCode)
-                {
-                    var dados = await response.Content.ReadAsStringAsync();
-                    return JsonConvert.DeserializeObject<IEnumerable<CursosViewModel>>(dados);
-
-                    
-                }
-                return new List<CursosViewModel>();
-            }
+            await _cursosRepository.Excluir(Id);
         }
+        public async Task<IActionResult> Update(int Id)
+        {
+            var result = await _cursosRepository.ObterCursosPorId(Id);
+
+            return View(result);
+        }
+        [HttpPost, ActionName("Update")]
+        public async Task<IActionResult> UpdatePost(int Id, CursosViewModel mod)
+        {
+            if (ModelState.IsValid)
+            {
+                if (Id > 0)
+                {
+                    await _cursosRepository.Update(Id, mod);
+                    TempData["Msg"] = $" Curso de Id: {Id} atualizado com sucesso";
+                    return RedirectToAction(nameof(ListaCursos));
+                }
+                else
+                {
+                    ModelState.AddModelError("", "houve um erro ao tentar editar o curso");
+                }
+            }
+           
+
+            return View(mod);
+        }
+
+        public async Task<IActionResult> Detalhes(int Id)
+        {
+            var result = await _cursosRepository.ObterCursosPorId(Id);
+
+            return View(result);
+        }
+        //public async Task<IEnumerable<CursosViewModel>?> GetCursos()
+        //{
+        //    using (HttpClient httpClient = new HttpClient())
+        //    {
+        //        var cursos = new CursosViewModel();
+
+        //        HttpResponseMessage response = await httpClient.GetAsync(apiUri + enumActions.ObterTodosCursos);
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            var dados = await response.Content.ReadAsStringAsync();
+        //            return JsonConvert.DeserializeObject<IEnumerable<CursosViewModel>>(dados);
+
+
+        //        }
+        //        return new List<CursosViewModel>();
+        //    }
+        //}
 
     }
 }

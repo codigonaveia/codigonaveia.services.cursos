@@ -1,10 +1,19 @@
 
 
+using codigonaveia.services.cursos.WebApplication.Interfaces;
+using Refit;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllersWithViews();
+var clientHandler = new HttpClientHandler();
+builder.Services.AddRefitClient<ICursosRepository>()
+    .ConfigureHttpClient(c =>
+    {
+        c.BaseAddress = new Uri(builder.Configuration.GetValue<string>("Uri"));
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
